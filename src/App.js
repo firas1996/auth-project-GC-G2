@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Login from "./components/Login/Login";
 import Home from "./components/Home/Home";
 import MainHeader from "./components/MainHeader/MainHeader";
+import AuthStore from "./store/auth-store";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -15,7 +16,7 @@ function App() {
     }
   }, []);
   // console.log("123");
-  const loginHandler = (email, password) => {
+  const loginHandler = () => {
     localStorage.setItem("isLoggedIn", "abc");
     setIsLoggedIn(true);
   };
@@ -26,13 +27,19 @@ function App() {
   };
 
   return (
-    <React.Fragment>
-      <MainHeader isAuthenticated={isLoggedIn} onLogout={logoutHandler} />
+    <AuthStore.Provider
+      value={{
+        isLoggedIn: isLoggedIn,
+        loginHandler: loginHandler,
+        logoutHandler: logoutHandler,
+      }}
+    >
+      <MainHeader />
       <main>
-        {!isLoggedIn && <Login onLogin={loginHandler} />}
-        {isLoggedIn && <Home onLogout={logoutHandler} />}
+        {!isLoggedIn && <Login />}
+        {isLoggedIn && <Home />}
       </main>
-    </React.Fragment>
+    </AuthStore.Provider>
   );
 }
 
